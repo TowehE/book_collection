@@ -1,13 +1,21 @@
 
 const libraryModel = require('../bookModel/bookmodel')
 
+const {validateLibrary, validateLibrary2} = require("../helpers/validator")
+
 //create books in my shelf  
 exports.createABook = async (req,res) =>{
     try {
+        const {error} =  validateLibrary(req.body)
+        if(error){
+            res.status(500).json({
+                message:error.details[0].message,
+            })
+        }else{
         
         const book = new libraryModel(req.body);
         
-        if(req.body.position !== "Toweh") {
+        if(req.body.position !== "admin") {
          res.status(400).json({
             message: "Unauthorised Access. Sorry you're not an Administrator",
          });
@@ -18,6 +26,7 @@ exports.createABook = async (req,res) =>{
         data : book
        
     })
+}
 } 
    }catch(error){
         res.status(500).json({
@@ -80,12 +89,25 @@ exports.issueABook =  async (req, res) => {
 //Update book 
 exports.updateBook = async (req, res) => {
     try{
+        const {error} =  validateLibrary2(req.body)
+        if(error){
+            res.status(500).json({
+                message:error.details[0].message,
+            });
+            return;
+        }else{
         //track book id
-    const title = req.params.title;
+    const titleId= req.params.titleId;
 
     //track book with the id gotten
-    const book = await libraryModel.findOne({title});
-
+    const book = await libraryModel.findById(titleId);
+   
+    if(!book){
+        res.status(400).json({
+            message :`book with id ${titleId} is not registered`
+        })
+        return;
+    }
      //check for book and replace the book update
      const bookUpdateData ={
         position: req.body.position || book.position,
@@ -94,10 +116,10 @@ exports.updateBook = async (req, res) => {
         genre: req.body.genre || book.genre
 
     }
-    const updatedBook = await libraryModel.findOneAndUpdate(book, bookUpdateData,  {new:true,
+    const updatedBook = await libraryModel.findByIdAndUpdate(titleId, bookUpdateData,  {new:true,
         })
        
-        if(req.body.position !== "Toweh"){
+        if(req.body.position !== "admin"){
             res.status(400).json({
                 message: "Unauthorised Access. you're not allowed to make any changes",
             });
@@ -107,10 +129,11 @@ exports.updateBook = async (req, res) => {
     
     else{
             res.status(200).json({
-                message: `${title} has been updated successfully`,
+                message: `${titleId} has been updated successfully`,
                 data: updatedBook ,
             })
         }
+    }
     }catch(error){
         res.status(500).json({
             message:error.message

@@ -25,7 +25,7 @@ router.post("/create", createABook);
 router.get("/issue/:titleId", issueABook);
 
 //endpoint to update book
-router.put("/update/:title", updateBook);
+router.put("/update/:titleId", updateBook);
 
 //endpoint to remove outdated book
 router.delete("/remove/:bookId", outdatedBook);

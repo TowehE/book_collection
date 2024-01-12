@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const librarySchema = new mongoose.Schema({
   position: {
     type: String,
-    enum: ["user", "Toweh"],
-    default: "user",
-    required: true
+    enum: ["user", "admin"],
+    default: "admin",
+   
   },
   title: {
     type: String,
@@ -23,6 +23,7 @@ const librarySchema = new mongoose.Schema({
     type: String,
     required: true
   },
+ 
   
 }, { timestamps: true });
 

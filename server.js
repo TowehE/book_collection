@@ -16,7 +16,7 @@ app.use(express.json());
 
 const port = process.env.port
 
-app.get("/api/v1", (req,res)=>{
+app.get("/", (req,res)=>{
     res.send("You're welcome to the THE PAGE CAFE. From Fantasy to Reality and Everything in between!")
 })
 
